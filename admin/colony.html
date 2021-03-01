@@ -142,7 +142,7 @@
                 var db_time = timestamp.toString().substring(0, 10);
                 var curr_time = Math.round(new Date() / 1000);
 
-                if ((curr_time - parseInt(db_time)) < 60) {
+                if ((curr_time - parseInt(db_time)) < 65) {
                     _h += '    <td class="td agent_name"><span class="openx"></span>' + filterXSS(data[i].agent_name) + '</td>';
                     _h += '    <td class="td"><span>' + filterXSS(data[i].agent_ip) + '</span></td>';
 
