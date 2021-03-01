@@ -1,6 +1,7 @@
 package httpx
 
 import (
+	"fmt"
 	"net/http"
 	"github.com/elazarl/goproxy"
 	"strings"
@@ -13,7 +14,12 @@ func Start(address string) {
 	proxy := goproxy.NewProxyHttpServer()
 
 	var info string
+	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)//new add
+	proxy.OnRequest().HandleConnectFunc(func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
+		fmt.Println(host)
+		return nil,""
 
+	})
 	proxy.OnRequest().DoFunc(
 		func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			info = "URL:" + r.URL.String() + "&&Method:" + r.Method + "&&RemoteAddr:" + r.RemoteAddr
@@ -26,8 +32,8 @@ func Start(address string) {
 			} else {
 				go report.ReportHttp("HTTP代理蜜罐", "本机", arr[0], info)
 			}
-
-			return r, nil
+			return r,goproxy.NewResponse(r,goproxy.ContentTypeText,http.StatusForbidden,"")//new add
+			//return r, nil
 		})
 
 	//proxy.OnResponse().DoFunc(
